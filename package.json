@@ -1,0 +1,10 @@
+{
+  "name": "pizza",
+  "version": "2.0.0",
+  "description": "Pizza ordering platform",
+  "dependencies": {
+  },
+  "devDependencies": {
+  },
+  "author": "Maximilian Nöthe"
+}
