@@ -1,4 +1,4 @@
-from flask import Flask, render_template, jsonify, request
+from flask import Flask, render_template, jsonify, request, send_file
 from flask_socketio import SocketIO
 import os
 import re
@@ -6,6 +6,7 @@ from datetime import datetime
 import eventlet
 
 from .database import database, Order, Pizzeria, create_tables
+from .genorder import print_order
 
 
 eventlet.monkey_patch()
@@ -32,6 +33,11 @@ socket = SocketIO(app)
 def setup():
     database.init(app.config['DATABASE'])
     create_tables()
+
+
+@app.route('/')
+def home():
+    return render_template('index.html')
 
 
 @app.route('/orders', methods=['GET'])
@@ -125,6 +131,11 @@ def select_pizzeria(pizzeria_id):
     return jsonify(msg='New place selected', type='success')
 
 
-@app.route('/')
-def home():
-    return render_template('index.html')
+@app.route('/order.pdf', methods=['GET'])
+def get_order():
+    name = request.args.get('name', 'Hans')
+    phone = request.args.get('phone', '1234')
+
+    orders = list(Order.select(Order.description, Order.name, Order.price).dicts())
+    tmp = print_order(orders, name, phone)
+    return send_file(tmp.name)
