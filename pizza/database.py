@@ -24,7 +24,7 @@ class Order(Model):
 
 class Pizzeria(Model):
     name = TextField()
-    url = TextField()
+    link = TextField()
     active = BooleanField(default=False)
 
     class Meta:
@@ -40,6 +40,6 @@ def create_tables(drop=False):
     database.create_tables([Order, Pizzeria], safe=True)
     Pizzeria.get_or_create(
         name='Pizzeria La Scala',
-        url='http://www.pizzerialascaladortmund.de',
+        link='http://www.pizzerialascaladortmund.de',
         defaults=dict(active=True),
     )

@@ -1,0 +1,26 @@
+<div id="admin-panel" class="card">
+  <div class="card-header">Admin</div>
+  <div class="card-body">
+    <div class="row">
+      <div class="col-12 col-md-4 align-self-center">
+        <div class="row">
+          <select v-on:change="changePizzeria" v-model="selectedPizzeriaID">
+            <option selected disabled value="">Pizzeria ändern</option>
+            <option v-for="pizzeria in pizzerias" v-bind:value="pizzeria.id">{{ pizzeria.id }}: {{ pizzeria.name }}</option>
+          <select>
+        </div>
+        <div class="row">
+        <button v-on:click="deleteOrders" class="btn btn-secondary" >Alle Bestellungen löschen</button>
+        </div>
+      </div>
+      <div class="col-12 col-md-8">
+        <form v-on:submit.prevent="addNewPizzeria">
+          <input class="form-control" type="text" required id="pizzeriaName" v-model="newPizzeria.name" placeholder="Pizzeria" />
+          <input class="form-control" type="url" required id="pizzeriaLink" v-model="newPizzeria.link" placeholder="Link" />
+          <input type="submit" class="btn btn-secondary" id="submitPizzeria" value="Neue Pizzeria hinzufügen"/>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+

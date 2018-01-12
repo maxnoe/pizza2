@@ -15,75 +15,16 @@
             E5 Pizza
           </h1>
           <p class="lead">
-          Heutige Pizzeria: <a :href="pizzeria.url">{{ pizzeria.name }}</a><br>
+          Heutige Pizzeria: <a :href="currentPizzeria.link">{{ currentPizzeria.name }}</a><br>
           Source-Code: <a href="https://github.com/maxnoe/pizza">https://github.com/maxnoe/pizza</a><br>
           <em>Hinweis: Doktoranden werden gebeten,<br>einen Euro mehr für Getränke und Snacks zu bezahlen.</em>
           </p>
         </div>
-        <div id="orders-panel" class="card">
-          <div class="card-header">Bestellungen</div>
-          <ul class="list-group list-group-flush" v-if="orders.length">
-            <li class="list-group-item" v-for="order in orders">
-              <div class="row">
-                <div class="col-4 col-sm-1 ">
-                  <span class="badge badge-secondary">{{ (order.price / 100).toFixed(2) }} €</span>
-                </div>
-                <div class="col-8 col-sm-5" align="right">{{ order.description }}</div>
-                <div class="col-6 col-sm-3 ">{{ order.name }}</div>
-                <div class="col-6 col-sm-3 " align="right">{{ order.timestamp }}</div>
-              <span class>
-              </div>
-            </li>
-          </ul>
-          <ul class="list-group list-group-flush" v-else>
-            <li class="list-group-item">Keine Bestellungen</li>
-          </ul>
-          <div class="card-footer">
-            <form v-on:submit.prevent="addNewOrder">
-              <input type="text" required id="description" v-model="newOrder.description" placeholder="Bestellung" />
-              <input type="text" required id="name" v-model="newOrder.name" placeholder="Name" />
-              <input type="text" required id="price" v-model="newOrder.price" placeholder="Preis" />
-              <input type="submit" class="btn btn-secondary" id="submit" value="Bestellen"/>
-            </form>
-          </div>
-        </div>
 
-        <div id="print-order-panel" class="card">
-          <div class="card-header">PDF herunterladen</div>
-          <div class="card-body">
-            <form action="pdf" method="GET">
-              <div class="row">
-                <div class="col-12 col-sm-6">
-                  <input class="form-control" placeholder="Name" type="text">
-                </div>
-                <div class="col-12 col-sm-6">
-                  <input class="form-control" placeholder="Telefonnummer" type="text">
-                </div>
-              </div>
-              <input class="btn btn-secondary" type="submit" value="Absenden">
-            </form>
-          </div>
-        </div>
+        {% include 'orders.html' %}
+        {% include 'getorder.html' %}
+        {% include 'admin.html' %}
 
-        <div id="admin-panel" class="card">
-          <div class="card-header">Admin</div>
-          <div class="card-body">
-            <div class="row">
-              <div class="col-12 col-md-4 align-self-center">
-                <form action="orders" method="DELETE">
-                  <input class="btn btn-secondary" type="submit" value="Alle Bestellungen löschen">
-                </form>
-              </div>
-              <div class="col-12 col-md-8">
-                <form action="pizzeria" method="POST">
-                  <input class="form-control" name="name" placeholder="Name" type="text">
-                  <input class="form-control" name="url" placeholder="Homepage" type="text">
-                  <input class="btn btn-secondary" type="submit" value="Neue Pizzeria">
-                </form>
-              </div>
-            </div>
-          </div>
-        </div>
       </div>
     </div>
     <script src="https://cdn.jsdelivr.net/npm/vue"></script>

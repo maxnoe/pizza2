@@ -3,7 +3,7 @@ import os
 import re
 from datetime import datetime
 
-from .database import database, Order, create_tables
+from .database import database, Order, Pizzeria, create_tables
 
 
 class VueFlask(Flask):
@@ -33,6 +33,12 @@ def get_orders():
     entries = list(Order.select().dicts())
     for e in entries:
         e['timestamp'] = e['timestamp'].isoformat()
+    return jsonify(entries)
+
+
+@app.route('/pizzerias', methods=['GET'])
+def get_pizzerias():
+    entries = list(Pizzeria.select().dicts())
     return jsonify(entries)
 
 
@@ -69,6 +75,36 @@ def add_order():
         )
 
     return jsonify(msg='New entry added', type='success')
+
+
+@app.route('/pizzerias', methods=['POST'])
+def add_pizzeria():
+    data = request.form.to_dict()
+
+    if not data['name']:
+        return jsonify(msg='Please provide a description', type='error')
+    elif not data['link']:
+        return jsonify(msg='Please provide a link', type='error')
+    else:
+        Pizzeria.get_or_create(
+            name=data['name'],
+            defaults={'link': data['link']},
+        )
+
+    return jsonify(msg='New entry added', type='success')
+
+
+@app.route('/pizzerias/<int:pizzeria_id>', methods=['POST'])
+def select_pizzeria(pizzeria_id):
+    try:
+        pizzeria = Pizzeria.get(id=pizzeria_id)
+        Pizzeria.update(active=False).execute()
+        pizzeria.active = True
+        pizzeria.save()
+    except Pizzeria.DoesNotExist:
+        return jsonify(msg='Place does not exist', type='error')
+
+    return jsonify(msg='New place selected', type='success')
 
 
 @app.route('/')

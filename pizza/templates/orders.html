@@ -1,0 +1,27 @@
+<div id="orders-panel" class="card">
+  <div class="card-header">Bestellungen</div>
+  <ul class="list-group list-group-flush" v-if="orders.length">
+    <li class="list-group-item" v-for="order in orders">
+      <div class="row">
+        <div class="col-4 col-sm-1 ">
+          <span class="badge badge-secondary">{{ (order.price / 100).toFixed(2) }} €</span>
+        </div>
+        <div class="col-8 col-sm-5" align="right">{{ order.description }}</div>
+        <div class="col-6 col-sm-3 ">{{ order.name }}</div>
+        <div class="col-6 col-sm-3 " align="right">{{ order.timestamp }}</div>
+      <span class>
+      </div>
+    </li>
+  </ul>
+  <ul class="list-group list-group-flush" v-else>
+    <li class="list-group-item">Keine Bestellungen</li>
+  </ul>
+  <div class="card-footer">
+    <form v-on:submit.prevent="addNewOrder">
+      <input type="text" required id="description" v-model="newOrder.description" placeholder="Bestellung" />
+      <input type="text" required id="name" v-model="newOrder.name" placeholder="Name" />
+      <input type="number" required id="price" step="0.1" v-model="newOrder.price" placeholder="Preis" />
+      <input type="submit" class="btn btn-secondary" id="submit" value="Bestellen"/>
+    </form>
+  </div>
+</div>
