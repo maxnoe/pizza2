@@ -19,7 +19,7 @@ var app = new Vue({
     },
     updateOrders: function  (orders, textStatus, jqXHR) {
       this.orders = orders.map((order, i)  => {
-        order["timestamp"] = moment(order["timestamp"]).format("DD.MM. HH:mm");
+        order["timestamp"] = moment.utc(order["timestamp"]).local().format("DD.MM. HH:mm");
         return order;
       });
     },
