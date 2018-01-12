@@ -3,13 +3,13 @@
   <ul class="list-group list-group-flush" v-if="orders.length">
     <li class="list-group-item" v-for="order in orders">
       <div class="row">
-        <div class="col-4 col-sm-1 ">
+        <div class="col-4 col-md-1 ">
           <span class="badge badge-secondary">{{ (order.price / 100).toFixed(2) }} €</span>
         </div>
-        <div class="col-8 col-sm-3" align="right">{{ order.description }}</div>
-        <div class="col-6 col-sm-3 ">{{ order.name }}</div>
-        <div class="col-6 col-sm-3 " align="right">{{ order.timestamp }}</div>
-        <div class="btn-group btn-group-sm pull-right col-sm-2 col-6 ">
+        <div class="col-8 col-md-3" align="right">{{ order.description }}</div>
+        <div class="col-6 col-md-2 ">{{ order.name }}</div>
+        <div class="col-6 col-md-3" align="right">{{ order.timestamp }}</div>
+        <div class="btn-group btn-group-sm pull-right col-md-3 col-6 ">
           <button class="btn btn-success btn-default btn-sm" v-if="order.paid" v-on:click="app.togglePaid(order.id)" >bezahlt</button>
           <button class="btn btn-secondary btn-sm" v-on:click="app.togglePaid(order.id)" v-else>bezahlt</button>
           <button class="btn btn-secondary btn-sm" v-on:click="app.deleteOrder(order.id)">löschen</button>
@@ -22,11 +22,21 @@
     <li class="list-group-item">Keine Bestellungen</li>
   </ul>
   <div class="card-footer">
-    <form v-on:submit.prevent="addNewOrder" class="form-inline">
-      <input class="form-control" type="text" required id="description" v-model="newOrder.description" placeholder="Bestellung" />
-      <input class="form-control" type="text" required id="name" v-model="newOrder.name" placeholder="Name" />
-      <input class="form-control" type="number" required id="price" step="0.1" v-model="newOrder.price" placeholder="Preis" />
-      <input type="submit" class="btn btn-secondary" id="submit" value="Bestellen"/>
+    <form v-on:submit.prevent="addNewOrder">
+      <div class="form-row">
+        <div class="col-12 col-md-4">
+          <input class="form-control" type="text" required id="description" v-model="newOrder.description" placeholder="Bestellung" />
+        </div>
+        <div class="col-12 col-md-4">
+          <input class="form-control" type="text" required id="name" v-model="newOrder.name" placeholder="Name" />
+        </div>
+        <div class="col-6 col-md-2">
+          <input class="form-control" type="number" required id="price" step="0.1" v-model="newOrder.price" placeholder="Preis" />
+        </div>
+        <div class="col-6 col-md-2">
+          <input type="submit" class="btn btn-secondary" id="submit" value="Bestellen"/>
+        </div>
+      </div>
     </form>
   </div>
 </div>
