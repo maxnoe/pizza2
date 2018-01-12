@@ -10,10 +10,10 @@ var app = new Vue({
   },
   methods: {
     getOrders: function () {
-      $.getJSON('/orders', {}, this.updateOrders);
+      $.getJSON(root + 'orders', {}, this.updateOrders);
     },
     getPizzerias: function () {
-      $.getJSON('/pizzerias', {}, this.updatePizzerias);
+      $.getJSON(root + 'pizzerias', {}, this.updatePizzerias);
     },
     updateOrders: function  (orders, textStatus, jqXHR) {
       this.orders = orders.map((order, i)  => {
@@ -26,31 +26,31 @@ var app = new Vue({
       this.currentPizzeria = pizzerias.filter((pizzeria, i) => {return pizzeria.active;})[0];
     },
     addNewOrder: function() {
-      $.post('/orders', this.newOrder, (data) => {console.log(data)});
+      $.post(root + 'orders', this.newOrder, (data) => {console.log(data)});
       this.newOrder = {};
       this.getOrders();
     },
     addNewPizzeria: function() {
-      $.post('/pizzerias', this.newPizzeria, (data) => {console.log(data);});
+      $.post(root + 'pizzerias', this.newPizzeria, (data) => {console.log(data);});
       this.newPizzeria = {};
     },
     deleteOrders: function() {
       $.ajax({
-        url: '/orders',
+        url: root + 'orders',
         type: 'DELETE',
         success: (data) => {console.log(data);}
       });
     },
     changePizzeria: function() {
-      $.post('/pizzerias/' + this.selectedPizzeriaID, {}, (data) => {console.log(data);});
+      $.post(root + '/pizzerias/' + this.selectedPizzeriaID, {}, (data) => {console.log(data);});
       this.selectedPizzeriaID = -1;
     },
     togglePaid: function(id) {
-      $.post('/orders/' + id, {}, (data) => {console.log(data)});
+      $.post(root + 'orders/' + id, {}, (data) => {console.log(data)});
     },
     deleteOrder: function(id) {
       $.ajax({
-        url: '/orders/' + id,
+        url: root + 'orders/' + id,
         type: 'DELETE',
         success: (data) => {console.log(data)}
       });
@@ -58,7 +58,13 @@ var app = new Vue({
   }
 })
 
-var socket = io();
+var root = window.location.pathname;
+console.log(root);
+if (root != '/'){
+  var socket = io({path: root + 'socket.io'});
+} else {
+  var socket = io();
+}
 
 socket.on('orderUpdate', app.getOrders);
 socket.on('pizzeriaUpdate', app.getPizzerias);

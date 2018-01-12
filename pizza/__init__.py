@@ -1,4 +1,4 @@
-from flask import Flask, render_template, jsonify, request, send_file
+from flask import Flask, render_template, jsonify, request, send_file, Blueprint
 from flask_socketio import SocketIO
 import os
 import re
@@ -10,6 +10,8 @@ from .genorder import print_order
 
 
 eventlet.monkey_patch()
+
+bp = Blueprint('pizza', __name__, static_url_path='')
 
 
 class VueFlask(Flask):
@@ -24,23 +26,18 @@ class VueFlask(Flask):
     })
 
 
-app = VueFlask(__name__)
-app.config['DATABASE'] = os.environ.get('PIZZA_DB', 'pizza.sqlite')
-socket = SocketIO(app)
-
-
-@app.before_first_request
+@bp.before_app_first_request
 def setup():
     database.init(app.config['DATABASE'])
     create_tables()
 
 
-@app.route('/')
+@bp.route('/')
 def home():
     return render_template('index.html')
 
 
-@app.route('/orders', methods=['GET'])
+@bp.route('/orders', methods=['GET'])
 def get_orders():
     entries = list(Order.select().dicts())
     for e in entries:
@@ -48,21 +45,21 @@ def get_orders():
     return jsonify(entries)
 
 
-@app.route('/orders', methods=['DELETE'])
+@bp.route('/orders', methods=['DELETE'])
 def delete_orders():
     Order.delete().execute()
     socket.emit('orderUpdate')
     return jsonify("success")
 
 
-@app.route('/orders/<int:order_id>', methods=['DELETE'])
+@bp.route('/orders/<int:order_id>', methods=['DELETE'])
 def delete_order(order_id):
     Order.get(id=order_id).delete().execute()
     socket.emit('orderUpdate')
     return jsonify("success")
 
 
-@app.route('/orders/<int:order_id>', methods=['POST'])
+@bp.route('/orders/<int:order_id>', methods=['POST'])
 def toggle_paid(order_id):
     order = Order.get(id=order_id)
     order.paid = not order.paid
@@ -72,13 +69,13 @@ def toggle_paid(order_id):
     return jsonify("success")
 
 
-@app.route('/pizzerias', methods=['GET'])
+@bp.route('/pizzerias', methods=['GET'])
 def get_pizzerias():
     entries = list(Pizzeria.select().dicts())
     return jsonify(entries)
 
 
-@app.route('/orders', methods=['POST'])
+@bp.route('/orders', methods=['POST'])
 def add_order():
     data = request.form.to_dict()
 
@@ -113,7 +110,7 @@ def add_order():
     return jsonify(msg='New entry added', type='success')
 
 
-@app.route('/pizzerias', methods=['POST'])
+@bp.route('/pizzerias', methods=['POST'])
 def add_pizzeria():
     data = request.form.to_dict()
 
@@ -132,7 +129,7 @@ def add_pizzeria():
     return jsonify(msg='New entry added', type='success')
 
 
-@app.route('/pizzerias/<int:pizzeria_id>', methods=['POST'])
+@bp.route('/pizzerias/<int:pizzeria_id>', methods=['POST'])
 def select_pizzeria(pizzeria_id):
     try:
         pizzeria = Pizzeria.get(id=pizzeria_id)
@@ -146,7 +143,7 @@ def select_pizzeria(pizzeria_id):
     return jsonify(msg='New place selected', type='success')
 
 
-@app.route('/order.pdf', methods=['GET'])
+@bp.route('/order.pdf', methods=['GET'])
 def get_order():
     name = request.args.get('name', 'Hans')
     phone = request.args.get('phone', '1234')
@@ -154,3 +151,14 @@ def get_order():
     orders = list(Order.select(Order.description, Order.name, Order.price).dicts())
     tmp = print_order(orders, name, phone)
     return send_file(tmp.name)
+
+
+basepath = os.environ.get('PIZZA_BASEPATH', '')
+socket_address = os.path.join(basepath, 'socket.io').lstrip('/')
+app = VueFlask(__name__, static_url_path=basepath)
+app.register_blueprint(
+    bp,
+    url_prefix=basepath,
+)
+socket = SocketIO(app, resource=socket_address)
+app.config['DATABASE'] = os.environ.get('PIZZA_DB', 'pizza.sqlite')
