@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>E5 Pizza</title>
     <link rel=stylesheet type=text/css href="(( url_for('static', filename='css/bootstrap.min.css') ))">
-    <link rel=stylesheet type=text/css href="static/css/site.css">
+    <link rel=stylesheet type=text/css href="(( url_for('static', filename='css/site.css') ))">
   </head>
   <body>
     <div class="container">
@@ -29,8 +29,8 @@
                   <span class="badge badge-secondary">{{ order.price }}</span>
                 </div>
                 <div class="col-8 col-sm-5" align="right">{{ order.description }}</div>
-                <div class="col-6 col-sm-3 ">{{ order.name }}</div>
-                <div class="col-6 col-sm-3 " align="right">{{ order.date }}</div>
+                <div class="col-6 col-sm-3 ">{{ order.author }}</div>
+                <div class="col-6 col-sm-3 " align="right">{{ order.timestamp }}</div>
               <span class>
               </div>
             </li>
@@ -79,7 +79,8 @@
       </div>
     </div>
     <script src="https://cdn.jsdelivr.net/npm/vue"></script>
-    <script src="static/js/moment.min.js"></script>
-    <script src="static/js/main.js"></script>
+    <script src="(( url_for('static', filename='js/moment.min.js') ))"></script>
+    <script src="(( url_for('static', filename='js/jquery.min.js') ))"></script>
+    <script src="(( url_for('static', filename='js/main.js') ))"></script>
   </body>
 </html>
