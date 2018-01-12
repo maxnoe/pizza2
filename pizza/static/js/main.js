@@ -44,7 +44,7 @@ var app = new Vue({
       });
     },
     changePizzeria: function() {
-      $.post(root + '/pizzerias/' + this.selectedPizzeriaID, {}, (data) => {console.log(data);});
+      $.post(root + 'pizzerias/' + this.selectedPizzeriaID, {}, (data) => {console.log(data);});
       this.selectedPizzeriaID = -1;
     },
     togglePaid: function(id) {
