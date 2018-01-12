@@ -1,9 +1,14 @@
 from flask import Flask, render_template, jsonify, request
+from flask_socketio import SocketIO
 import os
 import re
 from datetime import datetime
+import eventlet
 
 from .database import database, Order, Pizzeria, create_tables
+
+
+eventlet.monkey_patch()
 
 
 class VueFlask(Flask):
@@ -20,6 +25,7 @@ class VueFlask(Flask):
 
 app = VueFlask(__name__)
 app.config['DATABASE'] = os.environ.get('PIZZA_DB', 'pizza.sqlite')
+socket = SocketIO(app)
 
 
 @app.before_first_request
@@ -34,6 +40,13 @@ def get_orders():
     for e in entries:
         e['timestamp'] = e['timestamp'].isoformat()
     return jsonify(entries)
+
+
+@app.route('/orders', methods=['DELETE'])
+def delete_orders():
+    Order.delete().execute()
+    socket.emit('orderUpdate')
+    return jsonify("success")
 
 
 @app.route('/pizzerias', methods=['GET'])
@@ -74,6 +87,8 @@ def add_order():
             paid=False,
         )
 
+    socket.emit('orderUpdate')
+
     return jsonify(msg='New entry added', type='success')
 
 
@@ -91,6 +106,8 @@ def add_pizzeria():
             defaults={'link': data['link']},
         )
 
+    socket.emit('pizzeriaUpdate')
+
     return jsonify(msg='New entry added', type='success')
 
 
@@ -101,6 +118,7 @@ def select_pizzeria(pizzeria_id):
         Pizzeria.update(active=False).execute()
         pizzeria.active = True
         pizzeria.save()
+        socket.emit('pizzeriaUpdate')
     except Pizzeria.DoesNotExist:
         return jsonify(msg='Place does not exist', type='error')
 

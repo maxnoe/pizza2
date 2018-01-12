@@ -1,5 +1,3 @@
-
-
 var app = new Vue({
   el: '#app',
   data: {
@@ -40,7 +38,7 @@ var app = new Vue({
       $.ajax({
         url: '/orders',
         type: 'DELETE',
-        success: (data) => console.log(data)
+        success: (data) => {this.getOrders();}
       });
     },
     changePizzeria: function() {
@@ -49,6 +47,11 @@ var app = new Vue({
     }
   }
 })
+
+var socket = io();
+
+socket.on('orderUpdate', app.getOrders);
+socket.on('pizzeriaUpdate', app.getPizzerias);
 
 app.getOrders()
 app.getPizzerias()
