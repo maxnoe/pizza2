@@ -55,6 +55,23 @@ def delete_orders():
     return jsonify("success")
 
 
+@app.route('/orders/<int:order_id>', methods=['DELETE'])
+def delete_order(order_id):
+    Order.get(id=order_id).delete().execute()
+    socket.emit('orderUpdate')
+    return jsonify("success")
+
+
+@app.route('/orders/<int:order_id>', methods=['POST'])
+def toggle_paid(order_id):
+    order = Order.get(id=order_id)
+    order.paid = not order.paid
+    order.save()
+
+    socket.emit('orderUpdate')
+    return jsonify("success")
+
+
 @app.route('/pizzerias', methods=['GET'])
 def get_pizzerias():
     entries = list(Pizzeria.select().dicts())
@@ -66,7 +83,6 @@ def add_order():
     data = request.form.to_dict()
 
     price = re.findall('(\d+)(?:[,.](\d))?\s*(?:€|E)?', data['price'])
-    print(price)
     timestamp = datetime.utcnow()
 
     if not data['description']:
@@ -83,7 +99,6 @@ def add_order():
                 price += int(value[1]) * 10
             else:
                 price += int(value[1])
-        print(price)
 
         Order.create(
             name=data['name'],

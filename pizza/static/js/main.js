@@ -31,19 +31,29 @@ var app = new Vue({
       this.getOrders();
     },
     addNewPizzeria: function() {
-      $.post('/pizzerias', this.newPizzeria, (data) => {this.getPizzerias();});
+      $.post('/pizzerias', this.newPizzeria, (data) => {console.log(data);});
       this.newPizzeria = {};
     },
     deleteOrders: function() {
       $.ajax({
         url: '/orders',
         type: 'DELETE',
-        success: (data) => {this.getOrders();}
+        success: (data) => {console.log(data);}
       });
     },
     changePizzeria: function() {
-      $.post('/pizzerias/' + this.selectedPizzeriaID, {}, (data) => {this.getPizzerias();});
+      $.post('/pizzerias/' + this.selectedPizzeriaID, {}, (data) => {console.log(data);});
       this.selectedPizzeriaID = -1;
+    },
+    togglePaid: function(id) {
+      $.post('/orders/' + id, {}, (data) => {console.log(data)});
+    },
+    deleteOrder: function(id) {
+      $.ajax({
+        url: '/orders/' + id,
+        type: 'DELETE',
+        success: (data) => {console.log(data)}
+      });
     }
   }
 })
