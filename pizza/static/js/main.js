@@ -18,6 +18,7 @@ var app = new Vue({
   el: '#app',
   data: {
     pizzeria: {name: "La Scala", url: "https://www.pizzerialascaladortmund.de/"},
-    orders: orders
+    orders: orders,
+    delimiters: ["[[", "]]"]
   }
 })
