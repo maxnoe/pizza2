@@ -13,7 +13,8 @@ ENV LANG="en_US.UTF-8"
 
 RUN python3 -m pip install setuptools \
     && python3 -m pip install flask markdown jinja2 lxml cffi html5lib \
-    weasyprint flask-socketio eventlet peewee gunicorn
+    	weasyprint flask-socketio eventlet peewee gunicorn \
+    && rm -rf ~/.cache/pip
 
 ADD http://dl.1001fonts.com/fira-sans.zip /usr/share/fonts/truetype/
 RUN cd /usr/share/fonts/truetype && unzip fira-sans.zip && fc-cache
