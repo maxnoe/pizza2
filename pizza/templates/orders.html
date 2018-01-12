@@ -17,10 +17,10 @@
     <li class="list-group-item">Keine Bestellungen</li>
   </ul>
   <div class="card-footer">
-    <form v-on:submit.prevent="addNewOrder">
-      <input type="text" required id="description" v-model="newOrder.description" placeholder="Bestellung" />
-      <input type="text" required id="name" v-model="newOrder.name" placeholder="Name" />
-      <input type="number" required id="price" step="0.1" v-model="newOrder.price" placeholder="Preis" />
+    <form v-on:submit.prevent="addNewOrder" class="form-inline">
+      <input class="form-control" type="text" required id="description" v-model="newOrder.description" placeholder="Bestellung" />
+      <input class="form-control" type="text" required id="name" v-model="newOrder.name" placeholder="Name" />
+      <input class="form-control" type="number" required id="price" step="0.1" v-model="newOrder.price" placeholder="Preis" />
       <input type="submit" class="btn btn-secondary" id="submit" value="Bestellen"/>
     </form>
   </div>

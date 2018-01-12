@@ -8,7 +8,7 @@ var app = new Vue({
     orders: [],
     newOrder: {},
     newPizzeria: {},
-    selectedPizzeriaID: null
+    selectedPizzeriaID: -1
   },
   methods: {
     getOrders: function () {
@@ -30,6 +30,7 @@ var app = new Vue({
     addNewOrder: function() {
       $.post('/orders', this.newOrder, (data) => {console.log(data)});
       this.newOrder = {};
+      this.getOrders();
     },
     addNewPizzeria: function() {
       $.post('/pizzerias', this.newPizzeria, (data) => {this.getPizzerias();});
@@ -44,6 +45,7 @@ var app = new Vue({
     },
     changePizzeria: function() {
       $.post('/pizzerias/' + this.selectedPizzeriaID, {}, (data) => {this.getPizzerias();});
+      this.selectedPizzeriaID = -1;
     }
   }
 })
