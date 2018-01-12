@@ -5,18 +5,22 @@ var app = new Vue({
   data: {
     pizzeria: {name: "La Scala", url: "https://www.pizzerialascaladortmund.de/"},
     orders: [],
-    delimiters: ["[[", "]]"]
+    delimiters: ["[[", "]]"],
+    newOrder: {},
   },
   methods: {
     getOrders: function () {
-      console.log("Getting orders");
       $.getJSON('/orders', {}, this.updateOrders);
     },
     updateOrders: function  (orders, textStatus, jqXHR) {
       this.orders = orders.map((order, i)  => {
-        order["timestamp"] = moment(order["timestamp"]).format("DD.MM. hh:mm");
+        order["timestamp"] = moment(order["timestamp"]).format("DD.MM. HH:mm");
         return order;
       });
+    },
+    addNewOrder: function() {
+      $.post('/orders', this.newOrder, (data) => {console.log(data)});
+      this.newOrder = {};
     }
   }
 })

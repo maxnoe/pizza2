@@ -41,11 +41,12 @@ def add_order():
     data = request.form.to_dict()
 
     price = re.findall('(\d+)(?:[,.](\d))?\s*(?:€|E)?', data['price'])
+    print(price)
     timestamp = datetime.utcnow()
 
     if not data['description']:
         return jsonify(msg='Please provide a description', type='error')
-    elif not data['author']:
+    elif not data['name']:
         return jsonify(msg='Please provide your name', type='error')
     elif not price:
         return jsonify(msg='Price must be formed like this: 3.14', type='error')
@@ -57,9 +58,10 @@ def add_order():
                 price += int(value[1]) * 10
             else:
                 price += int(value[1])
+        print(price)
 
         Order.create(
-            author=data['author'],
+            name=data['name'],
             description=data['description'],
             price=price,
             timestamp=timestamp,

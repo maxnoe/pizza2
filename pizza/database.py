@@ -13,7 +13,7 @@ database = SqliteDatabase(None)
 
 class Order(Model):
     description = TextField()
-    author = TextField()
+    name = TextField()
     price = IntegerField()
     paid = BooleanField()
     timestamp = DateTimeField()
