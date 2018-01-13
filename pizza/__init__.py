@@ -54,7 +54,7 @@ def delete_orders():
 
 @bp.route('/orders/<int:order_id>', methods=['DELETE'])
 def delete_order(order_id):
-    Order.get(id=order_id).delete().execute()
+    Order.delete().where(Order.id == order_id).execute()
     socket.emit('orderUpdate')
     return jsonify("success")
 
