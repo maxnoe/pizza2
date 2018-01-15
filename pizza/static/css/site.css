@@ -1,3 +1,20 @@
 .card + .card {
   margin-top: 10px;
 }
+
+.order-list-item {
+  transition: all 1s;
+}
+.order-list-enter, .order-list-leave-to {
+  opacity: 0;
+}
+
+.order-list-leave-active {
+  /* position: absolute; */
+  height: 0;
+  padding-top: 0;
+  padding-bottom: 0;
+  opacity: 0;
+  font-size: 0;
+  color: transparent;
+}

@@ -1,7 +1,7 @@
 <div id="orders-panel" class="card">
   <div class="card-header">Bestellungen</div>
-  <ul class="list-group list-group-flush" v-if="orders.length">
-    <li class="list-group-item" v-for="order in orders">
+  <transition-group tag="ul" name="order-list" class="list-group">
+    <li class="list-group-item order-list-item" v-for="order in orders" v-bind:key="order.id">
       <div class="row">
         <div class="col-4 col-md-1 ">
           <span class="badge badge-secondary">{{ (order.price / 100).toFixed(2) }} €</span>
@@ -9,18 +9,15 @@
         <div class="col-8 col-md-3" align="right">{{ order.description }}</div>
         <div class="col-6 col-md-2 ">{{ order.name }}</div>
         <div class="col-6 col-md-3" align="right">{{ order.timestamp }}</div>
-        <div class="btn-group btn-group-sm pull-right col-md-3 col-6 ">
-          <button class="btn btn-success btn-default btn-sm" v-if="order.paid" v-on:click="app.togglePaid(order.id)" >bezahlt</button>
-          <button class="btn btn-secondary btn-sm" v-on:click="app.togglePaid(order.id)" v-else>bezahlt</button>
-          <button class="btn btn-secondary btn-sm" v-on:click="app.deleteOrder(order.id)">löschen</button>
+        <div class="btn-group btn-group-sm col-md-3 col-12 justify-content-end">
+          <button class="btn btn-success btn-default" v-if="order.paid" v-on:click="app.togglePaid(order.id)" >bezahlt</button>
+          <button class="btn btn-secondary" v-on:click="app.togglePaid(order.id)" v-else>bezahlt</button>
+          <button class="btn btn-secondary" v-on:click="app.deleteOrder(order.id)">löschen</button>
         </div>
-      <span class>
       </div>
     </li>
-  </ul>
-  <ul class="list-group list-group-flush" v-else>
-    <li class="list-group-item">Keine Bestellungen</li>
-  </ul>
+    <li class="list-group-item" v-if="orders.length == 0" key="-1">Keine Bestellungen</li>
+  </transition-group>
   <div class="card-footer">
     <form v-on:submit.prevent="addNewOrder">
       <div class="form-row">
