@@ -1,14 +1,35 @@
 "use strict";
 
+function errorMessage(msg) {
+  console.log(msg);
+  var div = $('<div>', {"class": 'alert alert-danger alert-dismissable'});
+  div.html('<button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>');
+  div.append($('<strong>').text(msg));
+  return $('#orders-panel').before(div);
+}
+
+function successMessage(msg) {
+  console.log(msg);
+  var div = $('<div>', {"class": 'alert alert-success alert-dismissable'});
+  div.html('<button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>');
+  div.append($('<strong>').text(msg));
+  return $('#orders-panel').before(div);
+}
+
+function handleError(response) {
+  errorMessage(response.responseJSON.msg);
+}
+
+
 var app = new Vue({
   el: '#app',
   data: {
-    currentPizzeria: {link: 'stuff', name: 'stuff', id: 1},
+    currentPizzeria: {},
     pizzerias: [],
     orders: [],
     newOrder: {},
-    newPizzeria: {},
-    selectedPizzeriaID: -1
+    newPizzeria: {link: '', name:''},
+    selectedPizzeriaID: 1
   },
   methods: {
     getOrders: function () {
@@ -25,7 +46,9 @@ var app = new Vue({
     },
     updatePizzerias: function  (pizzerias, textStatus, jqXHR) {
       this.pizzerias = pizzerias;
-      this.currentPizzeria = pizzerias.filter((pizzeria, i) => {return pizzeria.active;})[0];
+      var activePizzerias = pizzerias.filter((pizzeria, i) => {return pizzeria.active;});
+      this.currentPizzeria = activePizzerias[0];
+      this.selectedPizzeriaID = this.currentPizzeria.id;
     },
     addNewOrder: function() {
       $.post(root + 'orders', this.newOrder, (data) => {console.log(data)});
@@ -33,7 +56,15 @@ var app = new Vue({
       this.getOrders();
     },
     addNewPizzeria: function() {
-      $.post(root + 'pizzerias', this.newPizzeria, (data) => {console.log(data);});
+      console.log("new Pizzeria");
+      console.log(Object.assign({}, this.newPizzeria));
+      $.ajax({
+        url: root + 'pizzerias',
+        type: 'POST',
+        data: this.newPizzeria,
+        success: (data) => {successMessage("New Pizzeria added");},
+        error: handleError,
+      });
       this.newPizzeria = {};
     },
     deleteOrders: function() {
@@ -46,6 +77,14 @@ var app = new Vue({
     changePizzeria: function() {
       $.post(root + 'pizzerias/' + this.selectedPizzeriaID, {}, (data) => {console.log(data);});
       this.selectedPizzeriaID = -1;
+    },
+    deletePizzeria: function() {
+      $.ajax({
+        url: root + 'pizzerias/' + this.selectedPizzeriaID,
+        type: 'DELETE',
+        success: (data) => {console.log(data)},
+        error: handleError,
+      });
     },
     togglePaid: function(id) {
       $.post(root + 'orders/' + id, {}, (data) => {console.log(data)});
@@ -61,7 +100,6 @@ var app = new Vue({
 })
 
 var root = window.location.pathname;
-console.log(root);
 if (root != '/'){
   var socket = io({path: root + 'socket.io'});
 } else {

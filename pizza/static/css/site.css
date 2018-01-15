@@ -18,3 +18,11 @@
   font-size: 0;
   color: transparent;
 }
+
+.col + .col {
+  margin-top: 5px;
+}
+
+form.form-inline + form.form-inline {
+  margin-top: 5px;
+}

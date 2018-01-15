@@ -2,18 +2,27 @@
   <div class="card-header">Admin</div>
   <div class="card-body">
     <div class="row">
-      <div class="col-12 col-md-4 align-self-center">
-        <select class="form-control" v-on:change="changePizzeria" v-model="selectedPizzeriaID">
-          <option selected disabled value="-1">Pizzeria ändern</option>
-          <option v-for="pizzeria in pizzerias" v-bind:value="pizzeria.id">{{ pizzeria.id }}: {{ pizzeria.name }}</option>
-        <select>
-        <button v-on:click="deleteOrders" class="btn btn-secondary" >Alle Bestellungen löschen</button>
+      <div class="col col-12 col-md-6 align-self-center">
+        <form v-on:submit.prevent class="form-inline">
+          <div class="btn-group btn-group-sm">
+            <select class="form-control form-control-sm" v-model="selectedPizzeriaID">
+              <option v-for="pizzeria in pizzerias" v-bind:value="pizzeria.id">
+                {{ pizzeria.name }}
+              </option>
+            </select>
+            <input type="submit" class="btn btn-secondary" type="submit" @click="changePizzeria" value="Pizzeria auswählen">
+            <input type="submit" class="btn btn-secondary" type="submit" @click="deletePizzeria" value="Pizzeria löschen">
+          </div>
+        </form>
+        <form v-on:submit.prevent class="form-inline">
+          <input type="submit" v-on:click="deleteOrders" class="btn btn-secondary btn-sm" value="Alle Bestellungen löschen">
+        </form>
       </div>
-      <div class="col-12 col-md-8">
+      <div class="col col-12 col-md-6">
         <form v-on:submit.prevent="addNewPizzeria">
-          <input class="form-control" type="text" required id="pizzeriaName" v-model="newPizzeria.name" placeholder="Pizzeria" />
-          <input class="form-control" type="url" required id="pizzeriaLink" v-model="newPizzeria.link" placeholder="Link" />
-          <input type="submit" class="btn btn-secondary" id="submitPizzeria" value="Neue Pizzeria hinzufügen"/>
+          <input class="form-control form-control-sm" type="text" required id="pizzeriaName" v-model="newPizzeria.name" placeholder="Pizzeria" />
+          <input class="form-control form-control-sm" type="url" required id="pizzeriaLink" v-model="newPizzeria.link" placeholder="Link" />
+          <input type="submit" class="btn btn-secondary btn-sm" id="submitPizzeria" value="Neue Pizzeria hinzufügen"/>
         </form>
       </div>
     </div>

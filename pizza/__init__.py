@@ -83,11 +83,11 @@ def add_order():
     timestamp = datetime.utcnow()
 
     if not data['description']:
-        return jsonify(msg='Please provide a description', type='error')
+        return jsonify(msg='Please provide a description', type='error'), 400
     elif not data['name']:
-        return jsonify(msg='Please provide your name', type='error')
+        return jsonify(msg='Please provide your name', type='error'), 400
     elif not price:
-        return jsonify(msg='Price must be formed like this: 3.14', type='error')
+        return jsonify(msg='Price must be formed like this: 3.14', type='error'), 400
     else:
         value = price[0]
         price = int(value[0]) * 100
@@ -114,10 +114,10 @@ def add_order():
 def add_pizzeria():
     data = request.form.to_dict()
 
-    if not data['name']:
-        return jsonify(msg='Please provide a description', type='error')
-    elif not data['link']:
-        return jsonify(msg='Please provide a link', type='error')
+    if not data.get('name'):
+        return jsonify(msg='Please provide a description', type='error'), 400
+    elif not data.get('link'):
+        return jsonify(msg='Please provide a link', type='error'), 400
     else:
         Pizzeria.get_or_create(
             name=data['name'],
@@ -125,7 +125,6 @@ def add_pizzeria():
         )
 
     socket.emit('pizzeriaUpdate')
-
     return jsonify(msg='New entry added', type='success')
 
 
@@ -141,6 +140,24 @@ def select_pizzeria(pizzeria_id):
         return jsonify(msg='Place does not exist', type='error')
 
     return jsonify(msg='New place selected', type='success')
+
+
+@bp.route('/pizzerias/<int:pizzeria_id>', methods=['DELETE'])
+def delete_pizzeria(pizzeria_id):
+    if Pizzeria.select().count() == 1:
+        return jsonify(type='error', msg='Cannot delete only pizzeria'), 400
+
+    try:
+        pizzeria = Pizzeria.get(id=pizzeria_id)
+    except Pizzeria.DoesNotExist:
+        return jsonify(type='error', msg='Pizzeria does not exist'), 400
+
+    if pizzeria.active:
+        return jsonify(type='error', msg='Cannot delete active Pizzeria'), 400
+
+    pizzeria.delete_instance()
+    socket.emit('pizzeriaUpdate')
+    return jsonify("success")
 
 
 @bp.route('/order.pdf', methods=['GET'])
