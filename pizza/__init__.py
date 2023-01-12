@@ -3,13 +3,10 @@ from flask_socketio import SocketIO
 import os
 import re
 from datetime import datetime
-import eventlet
 
 from .database import database, Order, Pizzeria, create_tables
 from .genorder import print_order
 
-
-eventlet.monkey_patch()
 
 bp = Blueprint('pizza', __name__, static_url_path='')
 
