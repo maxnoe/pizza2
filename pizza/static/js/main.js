@@ -20,9 +20,11 @@ function handleError(response) {
   errorMessage(response.responseJSON.msg);
 }
 
+let app
+
 
 window.onload = function() {
-  var app = new Vue({
+  app = new Vue({
     el: '#app',
     data: {
       currentPizzeria: {},
